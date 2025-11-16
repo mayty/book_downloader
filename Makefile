@@ -1,28 +1,33 @@
 
+ensure_venv:
+ifndef VIRTUAL_ENV
+	$(error) "Python virtual env must be active"
+endif
 
-local_install:
+
+local_install: ensure_venv
 	pip install --upgrade pip
 	pip install --upgrade uv
 	uv sync --active
 
 
-stylecheck:
+stylecheck: ensure_venv
 	ruff format --diff --check .
 
 
-style:
+style: ensure_venv
 	ruff format .
 
 
-lintcheck:
+lintcheck: ensure_venv
 	ruff check .
 
 
-lint:
+lint: ensure_venv
 	ruff check --fix --unsafe-fixes .
 
 
-typecheck:
+typecheck: ensure_venv
 	mypy .
 
 
