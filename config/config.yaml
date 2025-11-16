@@ -1,0 +1,9 @@
+bot:
+    token: sample
+
+opds:
+    host: http://example.com
+    root: /opds
+
+sqlite:
+    file: /app/data/book_downloader.db

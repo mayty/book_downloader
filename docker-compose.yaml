@@ -1,0 +1,41 @@
+services:
+  app:
+    image: book_downloader_dev:latest
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.dev
+    environment:
+      CONFIG_PATH: /app/config/config.yaml
+      CONFIG_OVERRIDE_PATH: /app/config/config.local.yaml
+      UV_CACHE_DIR: "/root/.cache/uv"
+      LOG_LEVEL: DEBUG
+      LOG_LOCATION: "/var/log/app"
+      LOG_ROTATION: "100 MB"
+    volumes:
+      - ./config:/app/config
+      - ./Makefile:/app/Makefile
+      - ./book_downloader:/app/book_downloader
+      - ./pyproject.toml:/app/pyproject.toml
+      - ./uv.lock:/app/uv.lock
+      - ./log:/var/log/app
+      - uv_cache:/root/.cache/uv
+      - sqlite_data:/app/data
+  app_prod:
+    image: book_downloader_prod:latest
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.prod
+    environment:
+      CONFIG_PATH: /app/config/config.yaml
+      CONFIG_OVERRIDE_PATH: /app/config/config.local.yaml
+      LOG_LEVEL: INFO
+      LOG_LOCATION: "/var/log/app"
+      LOG_ROTATION: "100 MB"
+    volumes:
+      - ./config:/app/config
+      - ./log:/var/log/app
+      - sqlite_data:/app/data
+
+volumes:
+  uv_cache:
+  sqlite_data:

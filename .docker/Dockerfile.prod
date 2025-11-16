@@ -1,0 +1,43 @@
+FROM python:3.14.0-alpine as base
+
+ARG UV_VERSION=0.9.6
+ENV UV_PYTHON=/usr/local/bin/python
+ENV UV_LINK_MODE=copy
+ENV PATH="/root/.local/bin:${PATH}"
+
+RUN apk update && apk upgrade && apk add --no-cache curl make sqlite
+
+RUN curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
+
+ENV PATH="/root/.local/bin:${PATH}"
+
+COPY pyproject.toml uv.lock /app/
+COPY book_downloader /app/book_downloader/
+WORKDIR /app
+
+RUN uv export \
+      --format requirements.txt \
+      --no-dev \
+      --no-editable \
+      --frozen \
+      --no-hashes \
+      --no-annotate \
+      --no-emit-project \
+      --output-file=requirements.txt
+
+RUN uv build --wheel
+RUN pip install -r requirements.txt
+
+FROM python:3.14.0-alpine
+
+ENV PYTHONOPTIMIZE=2
+
+RUN apk update && apk upgrade && apk add --no-cache sqlite
+WORKDIR /app
+
+COPY --from=base /usr/local/lib/python3.14/site-packages/ /usr/local/lib/python3.14/site-packages/
+COPY --from=base /app/dist/ /tmp/build/
+
+RUN pip install /tmp/build/*.whl && rm -rf /tmp/build
+
+CMD book-downloader workers telegram

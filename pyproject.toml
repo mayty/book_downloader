@@ -1,0 +1,138 @@
+[build-system]
+requires = ["setuptools>=80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+find = {}
+
+[project]
+name = "book-downloader"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiohttp>=3.13.2",
+    "bleach>=6.3.0",
+    "click>=8.3.0",
+    "defusedxml>=0.7.1",
+    "loguru>=0.7.3",
+    "pydantic>=2.12.4",
+    "python-telegram-bot>=22.5",
+    "pyyaml>=6.0.3",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.2",
+    "ruff>=0.14.4",
+    "types-bleach>=6.3.0.20251029",
+    "types-defusedxml>=0.7.0.20250822",
+    "types-pyyaml>=6.0.12.20250915",
+    "uv>=0.9.8",
+]
+
+[project.scripts]
+book-downloader = "book_downloader.__main__:cli_root"
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = true  # mypy default to `Any` if no parentheses
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+ignore = [
+    "W191",  # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+    "E111",
+    "E114",
+    "E117",
+    "D206",
+    "D300",
+    "Q000",
+    "Q001",
+    "Q002",
+    "Q003",
+    "COM812",
+    "COM819",
+    "ISC001",
+    "ISC002",
+
+    "ANN",  # Type annotations handled by mypy
+
+    "D100",  # `Missing docstring in public module`
+    "D101",  # `Missing docstring in public class`
+    "D102",  # `Missing docstring in public method`
+    "D103",  # `Missing docstring in public function`
+    "D104",  # `Missing docstring in public package`
+    "D105",  # `Missing docstring in magic method`
+    "D107",  # `Missing docstring in __init__`
+    "D400",  # `First line should end with a period`
+    "D415",  # `First line should end with a period, question mark, or exclamation point`
+
+    "D203",  # `one-blank-line-before-class`, can conflict with formatter
+    "D211",  # `no-blank-line-before-class`, can conflict with formatter
+    "D212",  # `multi-line-summary-second-line`, incompatible with D213 `multi-line-summary-second-line`
+
+    "E402",  # `Module level import not at top of file`, handled by isort
+    "E501",  # `Line too long`, handled by black
+
+    "EXE002",  # `The file is executable but no shebang is present`
+
+    "FBT001",  # `Boolean-typed positional argument in function definition`
+
+    "FIX002",  # `Line contains TODO, consider resolving the issue`
+
+    "I001",  # `Import block is un-sorted or un-formatted`, handeled by isort
+
+    "PLC0415",  #  `import` should be at the top-level of a file, handled by isort
+
+    "S101",  # `Use of `assert` detected`
+
+    "SIM118",  # `Use `key in dict` instead of `key in dict.keys()``
+
+    "TD002",  # `Missing author in TODO; try: `# TODO(<author_name>): ...` or `# TODO @<author_name>: ...``
+    "TD003",  # `Missing issue link for this TODO`
+]
+
+[tool.mypy]
+#plugins = ["pydantic.mypy"]
+
+allow_any_unimported = false
+allow_any_expr = false
+allow_any_decorated = false
+allow_any_explicit = false
+allow_any_generics = false
+allow_subclassing_any = false
+
+allow_untyped_calls = false
+allow_untyped_defs = false
+allow_incomplete_defs = false
+allow_untyped_decorators = false
+
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+warn_unreachable = true
+
+allow_untyped_globals = false
+allow_redefinition = false
+local_partial_types = false
+implicit_reexport = true
+strict_equality = true
+strict = true
+
+[[tool.mypy.overrides]]
+module = "book_downloader.storate.sqlite.*"
+
+allow_any_expr = true
+allow_any_explicit = true

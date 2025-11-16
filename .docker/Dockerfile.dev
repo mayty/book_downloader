@@ -1,0 +1,18 @@
+FROM python:3.14.0-alpine
+
+ARG UV_VERSION=0.9.6
+ENV UV_PYTHON=/usr/local/bin/python
+ENV UV_LINK_MODE=copy
+ENV PATH="/root/.local/bin:${PATH}"
+
+RUN apk update && apk upgrade && apk add --no-cache curl make sqlite
+
+RUN curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
+
+WORKDIR /app
+RUN uv venv --no-project
+
+ENV VIRTUAL_ENV='/app/.venv'
+ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
+
+CMD uv sync && book-downloader workers telegram
