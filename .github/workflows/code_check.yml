@@ -1,9 +1,9 @@
-name: Tests
+name: Code check
 
 on: [push]
 
 jobs:
-  tests:
+  code-check:
     runs-on: ubuntu-latest
 
     steps:
