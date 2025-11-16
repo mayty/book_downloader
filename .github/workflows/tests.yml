@@ -14,5 +14,5 @@ jobs:
         run: uv python install
       - name: Install the project
         run: uv sync --locked
-      - name: Install dependencies
+      - name: Run checks
         run: uv run make check
